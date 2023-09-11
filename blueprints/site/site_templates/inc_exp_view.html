@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col d-flex justify-content-sm-center">
+            <h1>Income and Expenses for: {{ address }}</h1>
+        </div>
+    </div>
+</div>
+{% if no_monies %}
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col d-flex justify-content-sm-center">
+                <h2>You have not entered any Income or Expenses yet</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col d-flex justify-content-sm-center">
+                <button type="button" class="btn btn-primary mt-5" style="width:200px" onclick="window.location.href='/Income'">Add Income</button>
+                <button type="button" class="btn btn-primary mt-5" style="width:200px" onclick="window.location.href='/Expense'">Add Expense</button>
+            </div>
+        </div>
+    </div>
+{% else %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="d-flex mt-5 p-2"><h3>Income</h3></div>
+        </div>
+    </div>
+</div>
+
+{% for income in incomes %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col ">
+            <div class="mb-3">Income: {{ income.name }}</div>
+            <div class="mb-3">Amount: <span class='currency'>{{ income.amount }}</span> </div>
+        </div>
+    </div>
+</div>
+<hr>
+{% endfor %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="d-flex mt-3 mb-3 p-3"><h5>Total Income: <span class="currency">{{income_sum}}</span></h5></div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="d-flex mt-5 p-2"><h3>Expenses</h3></div>
+        </div>
+    </div>
+</div>
+{% for expense in expenses %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col ">
+            <div class="mb-3">Expense: {{ expense.name }}</div>
+            <div class="mb-3">Amount: <span class='currency'>{{ expense.amount }}</span> </div>
+        </div>
+    </div>
+</div>
+<hr>
+{% endfor %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="d-flex mt-3 mb-3 p-3"><h5>Total Expense: <span class="currency">{{expense_sum}}</span></h5></div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+<script>
+    const USD = new Intl.NumberFormat('en-US',{
+        locales:'en-US',
+        maximumSignificantDigits:3,
+        minimumFractionDigits:2,
+        maximumFractionDigits:3,
+        style:"currency",
+        currency:"USD",
+    })
+
+    let x = document.querySelectorAll(".currency");
+    for (let i = 0, len = x.length; i < len; i++) {
+        let num = Number(x[i].innerHTML)
+        x[i].innerHTML=USD.format(num)
+    }
+</script>
+{% endblock %}
