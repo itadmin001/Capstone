@@ -1,7 +1,18 @@
-from flask_sqlalchemy import SQLAlchemy,db
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, Column, String, Integer,DateTime,UniqueConstraint,ForeignKey,Text,text,Numeric
-from flask_login import UserMixin
+from flask_login import UserMixin,LoginManager
 from datetime import datetime
+import bcrypt
+from flask_marshmallow import Marshmallow
+
+db=SQLAlchemy()
+
+login_manager = LoginManager()
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(user_id)
+
+ma = Marshmallow()
 
 
 class Users(db.Model,UserMixin):
