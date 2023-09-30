@@ -1,0 +1,35 @@
+google map on address
+image gallery
+admin area
+user account page
+contact list attached to each property
+todo list attached to each property
+area for projected vs actual income/expenses
+    --> display for current vs projected ROI
+    
+API - average rent by ?zip? ?county? ?city?
+
+Move roi calc repetitions to single helper function and return the formatted roi
+
+Need to add statemnt to conditional that checks for no income and/or expense
+    --> this signals that we need to reset the ROI display area to "Has not been calculated"
+
+Add projected annual ROI
+
+content/copy for links on home page
+
+
+roi
+    purchase price/ loan amount
+    closing costs
+    initial renovation costs
+    estimated rent
+
+    cap rate?? <-- wtf is this??
+    cash-on-cash ROI ??
+    total interest paid vs total in mortgage payments
+
+    cash flows (in and out)
+    monthly loan payment
+    monthly cash on hand
+

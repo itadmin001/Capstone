@@ -55,8 +55,8 @@ table,td{
     border:1px solid !important;
 }
 
- th,td{
-    padding:10px;
+ th,td,td.button{
+    padding:10px !important;
     padding-right:40px
     
   }
@@ -77,3 +77,48 @@ table,td{
   .property_display img{
     max-width:250px;
   }
+
+  .btn-square-sm {
+    display:inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 30px !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 30px !important;
+    padding: 2px;
+    font-size:1em;
+ }
+
+ td.button{
+    text-align:center !important;
+    padding:0;
+  }
+
+  .price{
+    font-weight: bold;
+  }
+
+  .card{
+    border:.5px solid #ccc !important
+  }
+
+.contact-form {
+    color: #305896 !important;
+    font-weight: bold;
+}
+.contact-form .btn-default {
+    background-color: #305896;
+    color: #fff;
+    border-radius: 0;
+}
+.contact-form .btn-default:hover {
+    background-color: #4498C6;
+    color: #fff;
+}
+.contact-form .form-control {
+    border-radius: 0;
+}
+.contact-form .form-group{
+    margin-bottom:10px
+}

@@ -17,24 +17,12 @@
     <h1>Add Property</h1>
     <div class="row">
         <div class="col d-flex justify-content-sm-center">
-            <form action="{{ url_for('site.add_edit') }}" method="POST">
+            <form action="/Add-Image/{{prop_id}}" method="POST">
                 <div class="mb-3">
                     {{ form.hidden_tag() }}
-                    {{ wtf.form_field(form.address) }}
+                    {{ wtf.form_field(form.imageURL) }}
                   <!--<input type="text" class="form-control" id="PropAddress" name="PropAddress" value="" placeholder="Address">-->
                 </div>
-            
-                <div class="mb-3">
-                    <div class="form-group">
-                        {{ wtf.form_field(form.purch_price) }}
-                    <!-- <input type="text" class="form-control" id="PruchasePrice" name="PurchasePrice" value="" placeholder="Purchase Price"> -->
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <div class="form-group">
-                        {{ wtf.form_field(form.est_rent) }} 
-                        <!-- <input type="text" class="form-control" id="EstRent" name="EstRent" value="" placeholder="Estimated Rent"> -->
-                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>

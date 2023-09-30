@@ -8,7 +8,7 @@
     <div class="row">
         <h1 class="mt-5">Register</h1>
         <div class="col d-flex justify-content-md-center">
-            <form id="register-form" method="POST" action="{{url_for('register')}}">
+            <form id="register-form" method="POST" action="{{url_for('auth.register')}}">
                 {{ form.hidden_tag() }}
                 <div class="mb-3">{{ wtf.form_field(form.username) }}</div>
                 <div class="mb-3">{{ wtf.form_field(form.email) }}</div>

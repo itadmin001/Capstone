@@ -23,7 +23,7 @@
         </div>
         <div class="row">
             <div class="col d-flex justify-content-sm-center">
-                <button type="button" class="btn btn-primary mt-5" style="width:200px" onclick="window.location.href='{{url_for('add_edit')}}'">Add Property</button>
+                <button type="button" class="btn btn-primary mt-5" style="width:200px" onclick="window.location.href='{{url_for('site.add_edit')}}'">Add Property</button>
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
 <div class="container">
     <div class="row mt-5">
         <div class="col">
-            <button type="button" class="btn btn-primary mb-5" onclick="window.location.href='{{url_for('add_edit')}}'">Add Property</button>
+            <button type="button" class="btn btn-primary mb-5" onclick="window.location.href='{{url_for('site.add_edit')}}'">Add Property</button>
         </div>
     </div>
 </div>
@@ -40,22 +40,39 @@
 {% for property in properties %}
 <div class="container">
     <div class="row mt-5">
-        <div class="col ">
+        <div class="col property_display">
+            <img src="{{property.image}}" alt="" class="prop_image mb-3">
             <h3>Property: {{ property.address }}</h3>
             <div class="mb-3">Purchase Price: <span class='currency'>{{ property.purch_price }}</span></div>
             <div class="mb-3">Estimated Rent: <span class='currency'>{{ property.est_rent }}</span> </div>
-            <form action="/Income/{{property.prop_id}}" method="POST">
+            <form class="inc_exp_btn" action="/Income/{{property.prop_id}}" method="POST">
                 <button type="submit" class="btn btn-primary mb-3">Add Income</button>
             </form>
-            <form action="/Expense/{{property.prop_id}}" method="POST">
+            <form class="inc_exp_btn" action="/Expense/{{property.prop_id}}" method="POST">
                 <button type="submit" class="btn btn-primary mb-3">Add Expense</button>
             </form>
-            <a href="/view-exp-inc/{{property.prop_id}}" class="veiw">View Income and Expenses for this property</a>
+            <form class="inc_exp_btn" action="/Add-Image/{{property.prop_id}}" method="POST">
+                <button type="submit" class="btn btn-primary mb-3">Change Image</button>
+            </form>
+            <form class="inc_exp_btn" action="/delete/{{property.prop_id}}" method="POST">
+                <button type="submit" class="btn btn-danger mb-3">Delete Property</button>
+            </form>
+            <a href="/view-exp-inc/{{property.prop_id}}" class="veiw" style="display:block;">View Income and Expenses for this property</a>
+        </div>
+        <div class="col">
+            <h3>ROI</h3>
+            {% if property.roi %}
+            <h5 class="mb-3">Current ROI: <span>{{ property.roi }}%</span> </h5>
+            {% else %}
+            <h5>ROI has not yet been calculated</h5>
+            <h6>Enter income/expenses for this property to calculate</h6>
+            {% endif %}
         </div>
     </div>
 </div>
 <hr>
 {% endfor %}
+
 {% endif %}
 <script>
     const USD = new Intl.NumberFormat('en-US',{
