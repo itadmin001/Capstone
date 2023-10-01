@@ -95,6 +95,11 @@ table,td{
     padding:0;
   }
 
+#imageURL{
+    width:350px;
+  }
+
+
   .price{
     font-weight: bold;
   }
