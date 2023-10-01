@@ -85,7 +85,7 @@ def add_image(prop_id):
         db.session.commit()
         return redirect('/properties')
     
-    return render_template('add_image.html',form=form,prop_id=prop_id)
+    return render_template('add_image.html',form=form,prop_id=prop_id,property=property)
 
 @site.route('/delete/<id>', methods=['POST','GET'])
 @login_required
