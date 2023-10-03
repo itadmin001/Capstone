@@ -38,9 +38,9 @@ def get_store():
 
 @api.route('/order/<user_id>')
 @jwt_required()
-def get_order(cust_id):
+def get_order(user_id):
 
-    prodorder = ProdOrder.query.filter(ProdOrder.cust_id == cust_id).all()
+    prodorder = ProdOrder.query.filter(ProdOrder.user_id == user_id).all()
 
     data=[]
 
