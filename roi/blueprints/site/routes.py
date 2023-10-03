@@ -76,7 +76,6 @@ def add_image(prop_id):
     form=AddImageForm()
     prop_data=db.session.execute(select(Property).join(Users).filter(Users.user_id==current_user.user_id).filter(Property.prop_id==prop_id))
     property = [data[0] for data in prop_data]
-    print(f"PROP_DATA: {property[0].address}")
     if form.validate_on_submit():
         img_url = form.imageURL.data
         #### This looks like the safer and more acceptable way to add/update ####
@@ -86,6 +85,7 @@ def add_image(prop_id):
         db.session.commit()
         return redirect('/properties')
     
+    return render_template('add_image.html',form=form,prop_id=prop_id,property=property)
     return render_template('add_image.html',form=form,prop_id=prop_id,property=property)
 
 @site.route('/delete/<id>', methods=['POST','GET'])
