@@ -13,18 +13,18 @@
 
 {% block body %}
 
-<div class="container">
-    <h1>Add Property</h1>
+<div class="container text-center">
+    <h1>Change Image for: {{ property[0].address }}</h1>
     <div class="row">
         <div class="col d-flex justify-content-sm-center">
             <form action="/Add-Image/{{prop_id}}" method="POST">
                 <div class="mb-3">
                     {{ form.hidden_tag() }}
                     {{ wtf.form_field(form.imageURL) }}
-                  <!--<input type="text" class="form-control" id="PropAddress" name="PropAddress" value="" placeholder="Address">-->
+                    <button type="submit" class="btn btn-primary m-auto">Submit</button>
                 </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                
             </form>
             
         </div> 
