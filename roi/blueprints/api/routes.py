@@ -73,7 +73,6 @@ def create_order(cust_id):
         db.session.add(customer)
 
     order = Order()
-    order['order_id'] = Order.set_id
     db.session.add(order)
     for product in customer_order:
         
