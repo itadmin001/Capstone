@@ -36,11 +36,11 @@ def get_store():
     return jsonify(response)
 
 
-@api.route('/order/<user_id>')
+@api.route('/order/<cust_id>')
 @jwt_required()
-def get_order(user_id):
+def get_order(cust_id):
 
-    prodorder = ProdOrder.query.filter(ProdOrder.user_id == user_id).all()
+    prodorder = ProdOrder.query.filter(ProdOrder.cust_id == cust_id).all()
 
     data=[]
 
@@ -57,24 +57,24 @@ def get_order(user_id):
     return jsonify(data)
 
 
-@api.route('/order/create/<user_id>', methods=['POST'])
+@api.route('/order/create/<cust_id>', methods=['POST'])
 @jwt_required()
-def create_order(user_id):
+def create_order(cust_id):
 
     data = request.json
 
-    user_order=data['order']
+    customer_order=data['order']
 
-    user = Users.query.filter(Users.user_id == user_id).first()
-    if not user:
-        customer = Users(user_id)
-        db.session.add(user)
+    customer = Users.query.filter(Customer.cust_id == cust_id).first()
+    if not customer:
+        customer = Customer(cust_id)
+        db.session.add(customer)
 
     order = Order()
     db.session.add(order)
-    for product in user_order:
+    for product in customer_order:
 
-        prodorder = ProdOrder(product['prod_id'],product['quantity'],product['price'],order.order_id,customer.user_id)
+        prodorder = ProdOrder(product['prod_id'],product['quantity'],product['price'],order.order_id,customer.cust_id)
         db.session.add(prodorder)
 
         order.increment_order_total(prodorder.price)
@@ -100,7 +100,6 @@ def update_order(order_id):
     prodorder = ProdOrder.query.filter(ProdOrder.order_id ==order_id,ProdOrder.prod_id==prod_id).first()
     order = Order.query.get(order_id)
     product = Product.query.get(prod_id)
-    print(f"PRODORDER: {prodorder}")
     prodorder.set_price(product.price,new_quantity)
 
     diff = abs(prodorder.quantity - new_quantity)

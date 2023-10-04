@@ -47,6 +47,16 @@ class Users(db.Model,UserMixin):
 
     def __repr__(self):
         return f"User: {self.first_name} {self.last_name} Email: {self.email}"
+    
+class Customer(db.Model):
+    __tablename__ =         "customer"
+    cust_id =               Column(String, primary_key=True)
+    date_created =          Column(DateTime,default=datetime.utcnow())
+    product_order =         relationship('ProdOrder', backref='customer',lazy=True)
+
+    def __init__(self,cust_id):
+        self.cust_id = cust_id
+
 
 class Income(db.Model):
     __tablename__ =         "income"
