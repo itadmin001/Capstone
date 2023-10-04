@@ -74,9 +74,10 @@ def create_order(cust_id):
 
     order = Order()
     db.session.add(order)
+    customer_id = cust_id
     for product in customer_order:
 
-        prodorder = ProdOrder(product['prod_id'],product['quantity'],product['price'],order.order_id,cust_id)
+        prodorder = ProdOrder(product['prod_id'],product['quantity'],product['price'],order.order_id,customer_id)
         db.session.add(prodorder)
         #add price from prodorder table to increcemt order price
 
