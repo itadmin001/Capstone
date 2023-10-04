@@ -1,7 +1,7 @@
 
 from flask import Blueprint, request, jsonify 
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from flask_sqlalchemy import text
+from sqlalchemy import text
 
 from models import Users, Product, ProdOrder, Order, Customer, db, products_schema, product_schema
 
