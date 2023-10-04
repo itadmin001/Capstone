@@ -129,7 +129,7 @@ class Product(db.Model):
     price =         Column(Numeric(precision=10, scale=2), nullable = False)
     quantity =      Column(Integer, nullable = False)
     date_added =    Column(DateTime, default = datetime.utcnow)
-    prodord =       relationship('ProdOrder', backref = 'product', lazy=True)
+    prodorder =     relationship('ProdOrder', backref = 'product', lazy=True)
     
     def __init__(self,name,price,quantity,image = "",description = ""):
         self.prod_id = self.set_id()
@@ -165,6 +165,7 @@ class ProdOrder(db.Model):
     price =             Column(Numeric(precision = 10, scale = 2), nullable = False)
     order_id =          Column(String,  ForeignKey('order.order_id'), nullable = False)
     user_id =           Column(String, ForeignKey('users.user_id'), nullable = False)
+    cust_id =           Column(String, ForeignKey('customer.cust_id'), nullable=False)
 
 
     def __init__(self,prod_id,quantity,price,order_id,user_id):
