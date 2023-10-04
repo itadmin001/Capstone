@@ -67,6 +67,7 @@ def create_order(cust_id):
 
     customer = Customer.query.filter(Customer.cust_id == cust_id).first()
     if not customer:
+        print("NOT CUSTOMER")
         customer = Customer(cust_id)
         db.session.add(customer)
 
