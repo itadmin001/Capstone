@@ -165,8 +165,9 @@ def update_order(order_id):
 def delete_item_order(order_id):
     
     data = request.json
-    prod_id = data['prod_id']
     print(f"DATA: {data}")
+    prod_id = data['prod_id']
+    
     prodorder = ProdOrder.query.filter(ProdOrder.order_id == order_id, ProdOrder.prod_id == prod_id).first()
 
     order= Order.query.get(order_id)
