@@ -73,7 +73,7 @@ def create_order(cust_id):
     order = Order()
     db.session.add(order)
     for product in customer_order:
-
+        print(f"cust_id in for loop {cust_id}")
         prodorder = ProdOrder(product['prod_id'],product['quantity'],product['price'],order.order_id,cust_id)
         db.session.add(prodorder)
 
