@@ -167,13 +167,13 @@ class ProdOrder(db.Model):
     cust_id =           Column(String, ForeignKey('customer.cust_id'))
 
 
-    def __init__(self,prod_id,quantity,price,order_id,user_id):
+    def __init__(self,prod_id,quantity,price,order_id,cust_id):
         self.prodorder_id = self.set_id()
         self.prod_id = prod_id
         self.quantity = quantity
         self.price = self.set_price(price,quantity)
         self.order_id = order_id
-        self.user_id = user_id 
+        self.cust_id = cust_id 
 
 
     def set_id(self):
