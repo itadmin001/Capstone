@@ -164,7 +164,7 @@ class ProdOrder(db.Model):
     quantity =          Column(Integer, nullable = False)
     price =             Column(Numeric(precision = 10, scale = 2), nullable = False)
     order_id =          Column(String,  ForeignKey('order.order_id'), nullable = False)
-    cust_id =           Column(String, ForeignKey('customer.cust_id'), nullable=False)
+    cust_id =           Column(String, ForeignKey('customer.cust_id'))
 
 
     def __init__(self,prod_id,quantity,price,order_id,user_id):
