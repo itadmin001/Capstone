@@ -62,7 +62,7 @@ def get_order(cust_id):
 @jwt_required()
 
 def create_order(cust_id):
-    
+
     data = request.json
 
     customer_order=data['order'] #list of product dicts
@@ -166,7 +166,7 @@ def delete_item_order(order_id):
     
     data = request.json
     prod_id = data['prod_id']
-    
+    print(data)
     prodorder = ProdOrder.query.filter(ProdOrder.order_id == order_id, ProdOrder.prod_id == prod_id).first()
 
     order= Order.query.get(order_id)
