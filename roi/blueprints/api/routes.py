@@ -60,7 +60,7 @@ def get_order(cust_id):
 @api.route('/order/create/<cust_id>', methods=['POST','PUT','GET'])
 @jwt_required()
 def create_order(cust_id):
-    print(cust_id)
+    print(f"cust_id {cust_id}")
     data = request.json
 
     customer_order=data['order']
