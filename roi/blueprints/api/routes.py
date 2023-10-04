@@ -57,7 +57,7 @@ def get_order(cust_id):
     return jsonify(data)
 
 
-@api.route('/order/create/<cust_id>', methods=['POST'])
+@api.route('/order/create/<cust_id>', methods=['POST','PUT','GET'])
 @jwt_required()
 def create_order(cust_id):
     print(cust_id)
