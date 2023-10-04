@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify 
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity 
 
-from models import Users, Product, ProdOrder, Order, db, products_schema, product_schema
+from models import Users, Product, ProdOrder, Order, Customer, db, products_schema, product_schema
 
 api = Blueprint('api', __name__, url_prefix = '/api') #all of our endpoints need to be prefixed with /api
 
@@ -65,7 +65,7 @@ def create_order(cust_id):
 
     customer_order=data['order']
 
-    customer = Users.query.filter(Customer.cust_id == cust_id).first()
+    customer = Customer.query.filter(Customer.cust_id == cust_id).first()
     if not customer:
         customer = Customer(cust_id)
         db.session.add(customer)
