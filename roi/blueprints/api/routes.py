@@ -75,8 +75,8 @@ def create_order(cust_id):
     order = Order()
     db.session.add(order)
     for product in customer_order:
-        print(f"cust_id in for loop {cust_id}")
-        query = f'INSERT INTO \"productOrder\" (prod_id, quantity, price, order_id, cust_id) VALUES (\'{product["prod_id"]}\', {product["quantity"]}, {product["price"]},\'{order.order_id}\',\'{cust_id}\') '
+        order_id = ProdOrder.set_id
+        query = f'INSERT INTO \"productOrder\" (prodorder_id, prod_id, quantity, price, order_id, cust_id) VALUES (\'{order_id}\',\'{product["prod_id"]}\', {product["quantity"]}, {product["price"]},\'{order.order_id}\',\'{cust_id}\') '
         prodorder = db.session.execute(text(query))
         db.session.add(prodorder)
 
