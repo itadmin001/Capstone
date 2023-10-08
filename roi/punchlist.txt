@@ -2,17 +2,12 @@
 ORDERED BY PRIORITY
 
 add: (models and routes/CRUD/forms/views)
-    products
     cart/checkout
     orders
-        api's for above
-
-    schema for products
 
 user account page
 fix/check user model cascade deletes all when user is removed
 ALERT / CONFIRMATION when deleting income/expense (with details on alert)
-google map on address
 image gallery
 admin area
 contact list attached to each property
@@ -24,16 +19,16 @@ API - average rent by ?zip? ?county? ?city?
 
 Move roi calc repetitions to single helper function and return the formatted roi
 
-Need to add statemnt to conditional that checks for no income and/or expense
-    --> this signals that we need to reset the ROI display area to "Has not been calculated"
-
 content/copy for links on home page
 
-Not sure if i'm gonna need this or not...hanging on to it for now
-{% if current_user.user %}
-<div class="mt-2">
-    <a href="{{ url_for('site.update', id=product.prod_id ) }}" class="card-link btn btn-warning">Update</a>
-    <a href="{{ url_for('site.delete', id=product.prod_id ) }}" class="card-link btn btn-danger">Delete</a>
-</div>
-{% endif %}
 
+
+
+as of 10/8/23
+---------------
+
+update-cart route functionality is broken now -> need to fix the processing of the ajax
+    once above is complete, we can implement the Checkout button/add order to DB
+
+Add image gallery
+Add contact forms

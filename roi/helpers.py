@@ -15,26 +15,46 @@ class JSONENcoder(json.JSONEncoder):
 
 def get_image(search):
 
-    url = "https://google-search72.p.rapidapi.com/imagesearch"
+    url = f"https://api.unsplash.com/search/photos?page=1&query={search}"
 
-    querystring = {"q": search,"gl":"us","lr":"lang_en","num":"1","start":"0"}
+    # querystring = {"q": search,"gl":"us","lr":"lang_en","num":"1","start":"0"}
 
     headers = {
-        "X-RapidAPI-Key": "42fd925984msh562e14a38e46f74p1d7d82jsnc9f5517ec678",
-        "X-RapidAPI-Host": "google-search72.p.rapidapi.com"
+        "Authorization": "Client-ID p_CW5xrY6ic4EVgsoTGR9ZJpNmD_6k2AGAT64yonGk8",
+        "X-Total": "1"
     }
 
-    response = requests.get(url, headers=headers, params=querystring)
+    response = requests.get(url, headers=headers)
 
     data = response.json()
-    print(data)
-    img_url = data['items'][0]['originalImageUrl'] #traversing data dictionary to get the image url we want
+    img_url = data['results'][0]['urls']['raw']
     return img_url
 
 def calc_roi(purch_price, exp_total, income_total):
-    if income_total == None:
+    print(purch_price, exp_total, income_total)
+    if income_total is None:
         income_total = 0
-    initial_invest = (purch_price + exp_total)
+    exp_total = exp_total - purch
+    initial_invest = purch_price
     profit = income_total - initial_invest
-    roi = profit / initial_invest
+    print(f"init invest: {initial_invest}")
+    print(f"profit: {profit}")
+    roi = (profit / initial_invest) * 100
+    print(roi)
     return roi
+
+
+def array_merge( first_array , second_array ):
+    print("array merge")
+    if isinstance( first_array , list ) and isinstance( second_array , list ):
+        print("first if")
+        return first_array + second_array
+    elif isinstance( first_array , dict ) and isinstance( second_array , dict ):
+        print('elif 1')
+        return dict( list( first_array.items() ) + list( second_array.items() ) )
+    elif isinstance( first_array , set ) and isinstance( second_array , set ):
+        print("elif 2")
+        return first_array.union( second_array )
+    else:
+        print("else")
+        return False

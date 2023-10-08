@@ -3,48 +3,68 @@
 {% block head %}{% endblock head %}
 
 {% block body %}
-
+{% include 'navbar.html' %}
 <div class="container-fluid justify-content-center">
-    <div class="row shop-header p-5 justify-content-center">
-        <div class="col-3 d-flex flex-column justify-content-center">
-            <h2 class="m-auto">Swag Shop</h2>
-            {% if current_user.username == 'admin' %}
-            <a href="{{ url_for('site.create' )}}" class="btn btn-outline-dark mt-3">Create New Products</a>
-            {% endif %}
+    <header class="bg-dark py-5 shop-header">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Shop</h1>
+                <p class="lead fw-normal text-white-50 mb-0">swag and tools</p>
+            </div>
         </div>
-    </div>
+    </header>
 </div>
-<!-- Eventually our Products will show up down here! -->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 {% for product in store %}
-    <div class="row mt-5 mb-5 justify-content-center">
-        <div class="card d-flex rounded shadow flex-row w-50 p-3">
-            <div class="d-flex align-items-center" style="max-width:230px">
-                <img src="{{ product.image }}" class="img-fluid rounded" alt="cute plant image">
-            </div>
-            <div class="card-body d-flex flex-column justify-content-center p-4">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text">{{ product.description }}</p>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item price">Price: {{ product.price }}</li>
+            <div class="col mb-5">
+                <div class="card h-100">
+                    <!-- Product image-->
+                    <div style="height:238px !important">
+                        <img class="card-img-top" src="{{ product.image }}" alt="..." style="max-height:238px"/>
+                    </div>
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">{{ product.name }}</h5>
+                            <!-- Product reviews-->
+                            <div class="d-flex justify-content-center small text-warning mb-2">
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                                <div class="bi-star-fill"></div>
+                            </div>
+                            <!-- Product price-->
+                            <div class="price">${{ product.price }}</div>
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        {% if product.quantity <= 2 %}
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" style="pointer-events: none;" href="{{url_for('site.store')}}/add-to-cart/{{product.prod_id}}">Add to cart</a></div>
+                    </div>
+                    <div class="item-details-link m-auto"><a class="btn btn-outline-dark m-auto"  href="/store/item-detail/{{product.prod_id}}">Details</a></div>
+                    <div class="stock m-auto pt-2"><span class="m-auto">Status: </span><span class="text-error"><strong>Out of Stock</strong></span></div>
+                    {% else %}
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{url_for('site.store')}}/add-to-cart/{{product.prod_id}}">Add to cart</a></div>
+                    </div>
+                    <div class="item-details-link m-auto"><a class="btn btn-outline-dark m-auto" href="/store/item-detail/{{product.prod_id}}">Details</a></div>
+                    <div class="stock m-auto pt-2"><span class="m-auto">Status: </span><span class="text-success"><strong>In Stock</strong></span></div>
+                    {% endif %}
                     {% if current_user.username == 'admin' %}
-                    <li class="list-group-item">Quantity: {{ product.quantity }}</li>
+                    <div class="mt-2 m-auto">
+                        <a href="{{ url_for('site.update', id=product.prod_id ) }}" class="card-link btn btn-info">Update</a>
+                        <a href="{{ url_for('site.delete', id=product.prod_id ) }}" class="card-link btn btn-danger">Delete</a>
+                    </div>
                     {% endif %}
-                    {% if product.quantity <= 10 %}
-                        <span class='err-msg btn-danger p-2 opacity-50 rounded'> ALERT: Quantity is Low</span>
-                    {% endif %}
-                </ul>
-                {% if current_user.username == 'admin' %}
-                <div class="mt-2">
-                    <a href="{{ url_for('site.update', id=product.prod_id ) }}" class="card-link btn btn-warning">Update</a>
-                    <a href="{{ url_for('site.delete', id=product.prod_id ) }}" class="card-link btn btn-danger">Delete</a>
                 </div>
-                {% endif %}
             </div>
+{% endfor %}
         </div>
     </div>
-{% endfor %}
-
-
-
+</section>
 
 {% endblock body %}

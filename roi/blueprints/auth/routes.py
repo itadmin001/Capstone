@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect,url_for
+from flask import Blueprint, render_template, request, flash, redirect,url_for,session
 from flask_login import login_required,current_user,login_user,logout_user
 from sqlalchemy import select
 from werkzeug.security import check_password_hash
@@ -45,6 +45,7 @@ def login():
 @auth.route("/logout", methods=['GET','POST'])
 @login_required
 def logout():
+    session.clear()
     user = current_user
     user.authenticated = False
     db.session.add(user)

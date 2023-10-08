@@ -4,7 +4,7 @@
 
 {% endblock %}
 
-{% block header %}{% endblock %}
+{% block header %}{% include 'navbar.html' %}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -39,8 +39,8 @@
 
 {% for property in properties %}
 <div class="container">
-    <div class="row mt-5">
-        <div class="col property_display">
+    <div class="row mt-5 justify-content-space-between">
+        <div class="col-4 property_display">
             <img src="{{property.image}}" alt="" class="prop_image mb-3">
             <h3>Property: {{ property.address }}</h3>
             <div class="mb-3">Purchase Price: <span class='currency'>{{ property.purch_price }}</span></div>
@@ -54,12 +54,12 @@
             <form class="inc_exp_btn" action="/Add-Image/{{property.prop_id}}" method="POST">
                 <button type="submit" class="btn btn-primary mb-3">Change Image</button>
             </form>
-            <form class="inc_exp_btn" action="/delete/{{property.prop_id}}" method="POST">
-                <button type="submit" class="btn btn-danger mb-3">Delete Property</button>
+            <form class="inc_exp_btn" action="/delete-property/{{property.prop_id}}" method="POST">
+                <button type="button" onclick="confirmDelete($(this))" class="btn btn-danger mb-3">Delete Property</button>
             </form>
             <a href="/view-exp-inc/{{property.prop_id}}" class="veiw" style="display:block;">View Income and Expenses for this property</a>
         </div>
-        <div class="col">
+        <div class="col-4">
             <h3>ROI</h3>
             {% if property.roi %}
             <h5 class="mb-3">Current ROI: <span>{{ property.roi }}%</span> </h5>
@@ -68,12 +68,18 @@
             <h6>Enter income/expenses for this property to calculate</h6>
             {% endif %}
         </div>
+        <div class="col-4">
+            <h1>Google Map</h1>
+            <div id="map"><iframe width="500" height="350" style="border:0" loading="lazy" allowfullscreen
+                src="https://www.google.com/maps/embed/v1/place?q={{property.address}}&key=AIzaSyBhQiB9xXGK4a3W7UROMJaQmkFj-eWVHKQ"></iframe></div>
+        </div>
     </div>
 </div>
 <hr>
 {% endfor %}
 
 {% endif %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     const USD = new Intl.NumberFormat('en-US',{
         locales:'en-US',
@@ -89,5 +95,26 @@
         let num = Number(x[i].innerHTML)
         x[i].innerHTML=USD.format(num)
     }
+
+    function confirmDelete(button){
+        var form = button.closest('form')
+        console.log(form)
+        const confirmOrCancel = ()=>{
+        if(!window.confirm("Delete this property?")){
+            return false
+            }else{
+                form.submit()
+            }
+        }
+        $(this).click(function(e){
+        e.preventDefault()
+        confirmOrCancel()
+
+    })
+    }
+
+    
 </script>
+
+
 {% endblock %}

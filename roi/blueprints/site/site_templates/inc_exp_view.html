@@ -4,7 +4,7 @@
 
 {% endblock %}
 
-{% block header %}{% endblock %}
+{% block header %}{% include 'navbar.html' %}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -21,8 +21,8 @@
                 <h2>You have not entered any Income or Expenses yet</h2>
             </div>
         </div>
-        <div class="row">
-            <div class="col justify-content-sm-center">
+        <div class="row justify-content-center">
+            <div class="col text-center mt-5">
                 <form class="inc_exp_btn" action="/Income/{{id}}" method="POST">
                     <button type="submit" class="btn btn-primary mb-3">Add Income</button>
                 </form>
@@ -35,7 +35,7 @@
 <div class="container">
     <div class="row mt-5">
         <div class="col justify-content-sm-center">
-            <table>
+            <table class="properties-table">
                 <th>Income</th>
                 <th>Amount</th>
 {% if incomes %}
@@ -60,7 +60,7 @@
         </div>
         
         <div class="col justify-content-sm-center">
-            <table>
+            <table class="properties-table">
                 <th>Expense</th>
                 <th>Amount</th>
                 {% for expense in expenses %}

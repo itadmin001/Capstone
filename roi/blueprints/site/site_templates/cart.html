@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock head %}
+
+
+{% block body%}
+{% include 'navbar.html' %}
+{% if 'cart_item' in session %}
+   <p class="text-right" style="position: relative;"><a id="btnEmpty" href="{{ url_for('.empty_cart') }}" class="btn btn-danger" style="position:absolute;right:30px;top:20px">Empty Cart</a></p>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th class="text-center">Unit Price</th>
+                        <th class="text-center">Price</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody id="cart-table-body">
+                    {% for key, val in session['cart_item'].items() %}
+                    {% set quantity = session['cart_item'][key]['quantity'] %}
+                    {% set price = session['cart_item'][key]['price'] %}
+                    {% set item_total = session['cart_item'][key]['item_total'] %}
+                    {% set name = session['cart_item'][key]['name'] %} 
+                        <tr>
+                            <td class="col-sm-8 col-md-6">
+                            <div class="media">
+                                <a class="thumbnail pull-left" href="#"> <img class="media-object" src="{{ session['cart_item'][key]['image'] }}" style="width: 72px; height: 72px;"> </a>
+                                <div class="media-body">
+                                    <h5 class="media-heading"> <a href="/store/item-detail/{{session['cart_item'][key]['prod_id']}}">{{ name }}</a></h5>
+                                    <input type="hidden" value="{{ session['cart_item'][key]['prod_id'] }}" id="product-id"/>
+                                </div>
+                            </div></td>
+                            <td class="col-sm-1 col-md-1" style="text-align: center">
+                            <input type="number" class="form-control quantity" min="1" value="{{ quantity }}">
+                            </td>
+                            <td class="col-sm-1 col-md-1 text-center item-price">${{ price }}</td>
+                            <td class="col-sm-1 col-md-1 text-center item-total"><strong>${{ item_total }} </strong></td>
+                            <td class="col-sm-1 col-md-1">
+                            <a href="/store/delete-product-cart/{{session['cart_item'][key]['prod_id']}}" class="btn btn-danger m-3" style="width:117px">
+                                <span class="glyphicon glyphicon-remove"></span> Remove
+                            </a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4"></td>
+                        <td><button id="updateButton" class="btn btn-success m-3" style="width:117px">Update Cart</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><h3>Total</h3></td>
+                        <td colspan="2" id="cart-total" class="text-right"><h5><strong>${{ session['cart_total'] }}</strong></h5></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-shopping-cart"></span> Continue Shopping
+                        </button></td>
+                        <td>
+                        <button type="button" class="btn btn-success m-3" style="width:117px">
+                            Checkout <span class="glyphicon glyphicon-play"></span>
+                        </button>
+                    </td>                           
+                    </tr>
+                </tbody>
+            </table>
+  {% else: %}
+   <div class="no-records m-auto p-5 text-center"><h5>Your Cart is Empty</h5> <a class="btn btn-outline-dark mt-auto" href="/store">Return to Shop</a></div>
+  {% endif %}
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function updateItemTotal(input) {
+            var quantity = parseInt(input.val())
+            var itm_prc = input.closest('tr').find('td:eq(2)')
+            var item_price = parseFloat(itm_prc[0].innerText.replace('$',''))
+            var item_tot = item_price * quantity
+            input.closest('tr').find('td:eq(3)').text('$'+item_tot.toFixed(2))
+        }
+            
+        $('.quantity').each(function() {
+            updateItemTotal($(this));
+        })
+            
+        $('.quantity').on('change', function() {
+            updateItemTotal($(this));
+
+            var cartTotal = 0
+            
+            $('.item-total').each(function() {
+                cartTotal += parseFloat($(this).text().replace('$',''))
+            } )  
+            Ct = document.getElementById('cart-total')
+            Ct.innerHTML=`<h5><strong>$${cartTotal.toFixed(2)}</strong></h5>`
+        });
+
+
+        $('#updateButton').click(function () {
+            var quantity = $('.quantity').val()
+            var prod_id = $('#product-id')[0]['value']
+            var item_total = $('.item-total')[0].innerHTML.replace('$','')
+
+            var nodes = document.querySelectorAll('.quantity')
+
+            function packageAjaxData(){
+                var data = []
+                var crt_tot = document.getElementById('cart-total')
+                var cart_total = crt_tot.innerText.replace('$','')
+                nodes.forEach( (item) =>{
+                    var prod_id = $(item).closest('tr').find('input:eq(0)').val()
+                    var quantity = parseInt($(item).closest('tr').find('input:eq(1)').val())
+                    var item_total = parseFloat($(item).closest('tr').find('td:eq(3)').text().replace('$',''))
+
+                    data.push({[prod_id]:{'quantity':quantity,'item_total':item_total}})
+                })
+                data.push({'cart_total':cart_total})
+                return data
+            }
+            ajxData = packageAjaxData()
+        $.ajax({
+            type: 'POST',
+            url: '/update_session',
+            contentType: 'application/json',
+            data: JSON.stringify({ ajxData }),
+            success: function (response) {
+          if (response.success) {
+            $.ajax({
+                type:'POST',
+                url:""
+            })
+          } else {
+            alert('Failed to update session variable.');
+          }
+        },
+        error: function () {
+          alert('An error occurred while updating session variable.');
+        }
+      });
+    });
+    const confirmOrCancel = ()=>{
+            if(window.confirm("Empty Cart?")){
+                window.location.assign('/store/empty')
+            }else{
+                return false
+            }
+        }
+    $('#btnEmpty').click(function(e){
+        e.preventDefault()
+        confirmOrCancel()
+
+    })
+  });
+</script>
+{% endblock body %}

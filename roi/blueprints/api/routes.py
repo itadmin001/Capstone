@@ -92,37 +92,6 @@ def create_order(cust_id):
         'status':200,
         'message':'A new order was created'
     }
-# def create_order(cust_id):
-#     print(f"cust_id {cust_id}")
-#     data = request.json
-
-#     customer_order=data['order']
-
-#     customer = Customer.query.filter(Customer.cust_id == cust_id).first()
-#     if not customer:
-#         print("NOT CUSTOMER")
-#         customer = Customer(cust_id)
-#         db.session.add(customer)
-
-#     order = Order()
-#     db.session.add(order)
-#     print(f"ORDER ID: {order.order_id}")
-#     for product in customer_order:
-        
-#         query = f'INSERT INTO \"productOrder\" (prodorder_id, prod_id, quantity, price, order_id, cust_id) VALUES (\'{order.order_id}\',\'{product["prod_id"]}\', {product["quantity"]}, {product["price"]},\'{order.order_id}\',\'{cust_id}\') '
-#         prodorder = db.session.execute(text(query))
-#         db.session.add(prodorder)
-
-#         order.increment_order_total(product.price)
-
-#         current_product = Product.query.filter(Product.prod_id == product['prod_id']).first()
-#         current_product.decrement_quantity(product['quantity'])
-        
-#     db.session.commit()
-#     return {
-#         'status':200,
-#         'message':'A new order was created'
-#     }
 
 
 @api.route('/order/update/<order_id>',methods=['PUT','POST'])

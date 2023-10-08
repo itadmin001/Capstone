@@ -1,12 +1,14 @@
-from flask import Blueprint, render_template, request, flash, redirect,url_for
+from flask import Blueprint, render_template, request, flash, redirect,url_for,session,jsonify
 from flask_login import current_user, login_required
 from sqlalchemy import select,text
 from sqlalchemy import delete # type: ignore
+from flask_googlemaps import GoogleMaps
+from flask_googlemaps import Map
 
 
 from models import Property,Users,Income,Expenses,Product,db
-from forms import AddImageForm,AddPropertyForm,ExpenseForm,IncomeForm,ProductForm
-from helpers import calc_roi,get_image
+from forms import AddImageForm,AddPropertyForm,ExpenseForm,IncomeForm,ProductForm,UserAccountForm
+from helpers import calc_roi,get_image,array_merge
 
 site = Blueprint('site', __name__, template_folder='site_templates')
 
@@ -19,7 +21,70 @@ def index():
 @site.route('/account', methods = ['POST','GET'])
 @login_required
 def account():
-    return render_template('my_account.html')
+    user = select(Users).where(Users.user_id == current_user.user_id)
+    _user = db.session.execute(user)
+    this_user = _user.all()[0][0]
+    return render_template('my_account.html',user = this_user)
+
+@site.route('/edit-account/<uid>', methods=['POST','GET'])
+@login_required
+def edit_account(uid):
+
+    user = select(Users).where(Users.user_id == current_user.user_id)
+    _user = db.session.execute(user)
+    this_user = _user.all()[0][0]
+    print(this_user.username)
+    username = this_user.username
+    fname = this_user.first_name
+    lname = this_user.last_name
+    address = this_user.address
+    city = this_user.city
+    state = this_user.state
+    zip = this_user.zip
+    about_me = this_user.about_me
+    email = this_user.email
+    phone = this_user.phone
+    update_account = UserAccountForm(username=username,
+                                     first_name=fname,
+                                     last_name=lname,
+                                     address=address,
+                                     city=city,
+                                     state=state,
+                                     zip=zip,
+                                     phone=phone,
+                                     email=email,
+                                     about_me=about_me
+                                     )
+    
+    if request.method == 'POST' and update_account.validate_on_submit():
+        username = update_account.username.data
+        fname = update_account.first_name.data
+        lname = update_account.last_name.data
+        address = update_account.address.data
+        city = update_account.city.data
+        state = update_account.state.data
+        zip = update_account.zip.data
+        email = update_account.email.data
+        phone = update_account.phone.data
+        about_me = update_account.about_me_body.data
+
+        this_user.username = username
+        this_user.first_name = fname
+        this_user.last_name = lname
+        this_user.address = address
+        this_user.city = city
+        this_user.state = state
+        this_user.zip = zip
+        this_user.email = email
+        this_user.phone = phone
+        this_user.about_me = about_me
+
+        db.session.commit()
+
+        flash(f"User information udated!", category='success')
+        return redirect('/account')
+
+    return render_template('edit_account_details.html',form=update_account,user_id = current_user.user_id)
 
 @site.route('/properties', methods = ['POST','GET'])
 @login_required
@@ -45,27 +110,10 @@ def add_edit():
         address = form.address.data
         purchase = form.purch_price.data
         est_rent = form.est_rent.data
-        purchase_price = form.purch_price.data
+
         new_property=Property(address=address,purch_price=purchase,est_rent=est_rent,_user_id=current_user.user_id)
         db.session.add(new_property)
         db.session.commit()
-        prop_id_q = db.session.execute(select(Property.prop_id).where(Property.address == address))
-        prop_id = prop_id_q.all()[0][0]
-        expense_amount = purchase_price
-        expense_name = "Purchase Price"
-        new_expense=Expenses(name=expense_name,amount=expense_amount,prop_id=prop_id,user_id=current_user.user_id)
-        db.session.add(new_expense)
-        db.session.commit()
-
-        prop = db.session.execute(select(Property).where(Property.prop_id==prop_id))
-        exp_total = db.session.execute(text(f"select sum(amount) from expense inner join property on property.prop_id = expense.prop_id where expense.user_id = '{current_user.user_id}'"))
-        inc_total = db.session.execute(text(f"select sum(amount) from income inner join property on property.prop_id = income.prop_id where income.user_id = '{current_user.user_id}'"))
-        roi= calc_roi(prop.all()[0][0].purch_price,exp_total.all()[0][0],inc_total.all()[0][0])
-        roif = "%.2f" % roi
-        query=text(f'UPDATE property SET roi = {roif} WHERE property.prop_id = {prop_id}')
-        db.session.execute(query)
-        db.session.commit()
-
         return redirect(url_for('site.properties'))
     
     return render_template('add_edit_property.html',form=form)
@@ -86,9 +134,9 @@ def add_image(prop_id):
         return redirect('/properties')
     
     return render_template('add_image.html',form=form,prop_id=prop_id,property=property)
-    return render_template('add_image.html',form=form,prop_id=prop_id,property=property)
 
-@site.route('/delete/<id>', methods=['POST','GET'])
+
+@site.route('/delete-property/<id>', methods=['POST','GET'])
 @login_required
 def prop_delete(id):
     query = f'DELETE FROM Property WHERE Property.prop_id = {id}'
@@ -220,6 +268,7 @@ def contact():
 ##############################    STORE STUFF   #############################
 
 @site.route('/store')
+@login_required
 def store():
 
     store = Product.query.all()
@@ -228,6 +277,7 @@ def store():
 
 
 @site.route('/store/create', methods = ['GET', 'POST'])
+@login_required
 def create():
 
     addProductForm = ProductForm()
@@ -252,6 +302,7 @@ def create():
 
 
 @site.route('/store/update/<id>', methods = ['GET', 'POST'])
+@login_required
 def update(id):
     prod = select(Product).where(Product.prod_id == id)
     product = db.session.execute(prod)
@@ -270,14 +321,7 @@ def update(id):
         image = updateform.image.data
         price = updateform.price.data
         quantity = updateform.quantity.data
-        print('fuck you i\'m in')
-        print(description)
-        print(name)
-        print(image)
-        print(price)
-        print(quantity)
 
-    #try: 
         this_product.name = name
         this_product.description = description
         if image:    
@@ -291,25 +335,141 @@ def update(id):
 
         db.session.commit()
 
-        flash(f"You have successfully updated product {this_product.name}", category='success')
+        flash(f"Updated product {this_product.name}", category='success')
         return redirect('/store')
 
-    #except:
-        # flash("We were unable to process your request. Please try again ", category='warning')
-        # return redirect('/store')
         
     return render_template('update_product.html', form=updateform, product=product)
 
 
-@site.route('/store/delete/<id>')
+@site.route('/store/delete-product-store/<id>')
+@login_required
 def delete(id):
 
     product = Product.query.get(id)
 
-    db.session.delete(product)
+    db.session.delete(product.prod_id)
     db.session.commit()
 
     return redirect('/store')
 
 
+@site.route('/store/add-to-cart/<prod_id>', methods=['POST', 'GET'])
+@login_required
+def add_to_cart(prod_id):
+    # try:
+    product_id = prod_id
+    product = Product.query.filter_by(prod_id=product_id).first()
 
+    cart_total = 0
+    cart_total_item_count = 0
+
+    session.modified = True
+    if 'cart_item' in session:
+        print('cart not empty')
+        if product_id in session['cart_item'].keys():
+            print("item exists in cart")
+            quantity = session['cart_item'][product_id]['quantity'] + 1
+            cart_total = session['cart_total'] + session['cart_item'][product_id]['price']
+
+        else:
+            print("merging")
+            itemArray = { product.prod_id : {'name' : product.name, 'prod_id' : product.prod_id, 'quantity' : 1, 'price' : product.price, 'image' : product.image, 'item_total': product.price}}
+            session['cart_item'] = array_merge(session['cart_item'], itemArray)
+        
+        for key, value in session['cart_item'].items():
+            individual_quantity = int(session['cart_item'][key]['quantity'])
+            individual_price = float(session['cart_item'][key]['price'])
+            cart_total_item_count = cart_total_item_count + individual_quantity
+            cart_total = float(cart_total) + individual_price
+    else:
+        quantity = 1
+        itemArray = { product.prod_id : {'name' : product.name, 'prod_id' : product.prod_id, 'quantity' : quantity, 'price' : product.price, 'image' : product.image, 'item_total': quantity * product.price}}
+        session['cart_item'] = itemArray
+        cart_total_item_count = cart_total_item_count + quantity
+        cart_total = cart_total + quantity * product.price
+        
+    session['cart_total_item_count'] = cart_total_item_count
+    session['cart_total'] = cart_total
+    return redirect('/store')
+
+    # except Exception as e:
+    #     print("Exception")
+    #     print(e)
+    # finally:
+    #     print('fell thru to finally')
+        # return redirect('/store')
+
+
+@site.route('/store/cart', methods=['POST','GET'])
+@login_required
+def cart():
+    print(f"CART SESSION: {session}")
+    return render_template('cart.html', session = session)
+
+@site.route('/store/empty',methods=['POST','GET'])
+@login_required
+def empty_cart():
+    try:
+        session.clear()
+        return redirect(url_for('site.store'))
+    except Exception as e:
+        print(e)
+    return redirect(url_for('site.store'))
+
+
+@site.route('/store/delete-product-cart/<string:prod_id>', methods=['POST','GET'])
+@login_required
+def delete_product_cart(prod_id):
+    cart_total = 0
+    cart_total_item_count = 0
+    session.modified=True
+    for cart_item in session['cart_item'].items():
+        if cart_item[0] == prod_id:
+            session['cart_item'].pop(cart_item[0],None)
+            if 'cart_item' in session:
+                for key, value in session['cart_item'].items():
+                    individual_quantity = int(session['cart_item'][key]['quantity'])
+                    individual_price = float(session['cart_item'][key]['price'])
+                    cart_total_item_count = cart_total_item_count + individual_quantity
+                    cart_total =cart_total + individual_price
+            break
+    if cart_total_item_count == 0:
+        session.clear()
+        return redirect('/store/empty')
+    else:
+        session['cart_total'] = cart_total
+            
+    return redirect(url_for('site.cart'))
+
+
+@site.route('/store/item-detail/<string:prod_id>', methods=['POST','GET']) #type: ignore
+@login_required
+def item_detail(prod_id):
+    product = Product.query.filter_by(prod_id=prod_id).first()
+
+    return render_template('shop_item_detail.html',product=product)
+
+@site.route('/update_session', methods=['POST','GET'])
+@login_required
+def update_session():
+    keys=[]
+    extractedKeys =[]
+    data = request.json
+    i = 0
+    for key, item in data.items():
+       for k in range(len(item)):
+           print(item[k])
+           keys.append(item[k].keys())
+    for key in keys:
+        product_id = list(key)[0]
+        session['cart_item'][product_id]['quantity'] = data[product_id]['quantity']
+        session['cart_item'][product_id]['item_total'] = data[product_id]['item_total']
+    
+        ct = data['cart_total']
+        cart_total = "%.2f" % float(ct)
+        print(f"CART TTL: {cart_total}")
+        session['cart_total'] = cart_total
+        session.modified=True
+    flash("Cart Updated!",category='success')
+    return jsonify(success=True)

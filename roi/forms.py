@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,DecimalField, HiddenField,BooleanField,IntegerField,SubmitField
 from wtforms.validators import InputRequired,Length,Email,DataRequired
+from wtforms.widgets import TextArea
 
 class LoginForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(),Length(min=4,max=15)])
@@ -36,3 +37,16 @@ class ProductForm(FlaskForm):
     price = DecimalField("Price", validators=[DataRequired()])
     quantity = IntegerField("Quantity", validators=[DataRequired()])
     submit = SubmitField()
+
+class UserAccountForm(FlaskForm):
+    username =          StringField('Username')
+    first_name =        StringField('First Name')
+    last_name =         StringField('Last Name')
+    address =           StringField('Address')
+    city =              StringField('City')
+    state =             StringField('State')
+    zip =               StringField('Postal Code')
+    email =             StringField('Email')
+    phone =             StringField('Phone')
+    about_me_label =    StringField(u"About Me")
+    about_me_body =     StringField(u'About Me', widget=TextArea())
