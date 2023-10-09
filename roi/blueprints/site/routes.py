@@ -2,8 +2,6 @@ from flask import Blueprint, render_template, request, flash, redirect,url_for,s
 from flask_login import current_user, login_required
 from sqlalchemy import select,text
 from sqlalchemy import delete # type: ignore
-from flask_googlemaps import GoogleMaps
-from flask_googlemaps import Map
 
 
 from models import Property,Users,Income,Expenses,Product,db

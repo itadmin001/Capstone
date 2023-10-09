@@ -32,3 +32,8 @@ update-cart route functionality is broken now -> need to fix the processing of t
 
 Add image gallery
 Add contact forms
+
+
+was able to get the user account page finished out and and made SOME progress on the cart functionality but it is still not updating properly
+as I have some issue with the ajax...there is a key error that I am not going to have time to work out til later...gotta get everything
+else done first.
