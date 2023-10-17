@@ -94,7 +94,7 @@ def create_order(cust_id):
     }
 
 
-@api.route('/order/update/<order_id>',methods=['PUT','POST'])
+@api.route('/order/update/<order_id>',methods=['PUT','POST','GET'])
 @jwt_required()
 def update_order(order_id):
 
@@ -152,3 +152,11 @@ def delete_item_order(order_id):
         'status':200,
         'message':"Order Delete Success"
     }
+
+
+@api.route('/properties/<user_id>', methods=['POST','GET'])
+@jwt_required
+def get_properties(user_id):
+    data = request.json
+
+    

@@ -34,7 +34,7 @@ def calc_roi(purch_price, exp_total, income_total):
     print(purch_price, exp_total, income_total)
     if income_total is None:
         income_total = 0
-    exp_total = exp_total - purch
+    exp_total = exp_total - purch_price
     initial_invest = purch_price
     profit = income_total - initial_invest
     print(f"init invest: {initial_invest}")
