@@ -368,10 +368,9 @@ def add_to_cart(prod_id):
         if product_id in session['cart_item'].keys():
             print("item exists in cart")
             quantity = session['cart_item'][product_id]['quantity'] + 1
-            print(f"CART TOTAL: {type(session['cart_total'])}")
-            print(f"CART ITEM PRICE: {type(session['cart_item'][product_id]['price'])}")
+            session['cart_item'][product_id]['quantity'] += 1
             cart_total = session['cart_total'] + float(session['cart_item'][product_id]['price'])
-            
+            session['cart_total'] = session['cart_total'] + float(session['cart_item'][product_id]['price'])
 
         else:
             print("merging")
