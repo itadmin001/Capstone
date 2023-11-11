@@ -369,7 +369,7 @@ def add_to_cart(prod_id):
             print("item exists in cart")
             quantity = session['cart_item'][product_id]['quantity'] + 1
             session['cart_item'][product_id]['quantity'] += 1
-            cart_total = session['cart_total'] + float(session['cart_item'][product_id]['price'])
+            cart_total = float(session['cart_total']) + float(session['cart_item'][product_id]['price'])
             session['cart_total'] = float(session['cart_total']) + float(session['cart_item'][product_id]['price'])
 
         else:
