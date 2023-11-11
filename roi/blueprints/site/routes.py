@@ -369,6 +369,7 @@ def add_to_cart(prod_id):
             print("item exists in cart")
             quantity = session['cart_item'][product_id]['quantity'] + 1
             print(f"CART TOTAL: {session['cart_total']}")
+            print(f"CART ITEM PRICE: {session['cart_item'][product_id]['price']}")
             cart_total = session['cart_total'] + session['cart_item'][product_id]['price']
             
 
