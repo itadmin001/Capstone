@@ -370,7 +370,7 @@ def add_to_cart(prod_id):
             quantity = session['cart_item'][product_id]['quantity'] + 1
             session['cart_item'][product_id]['quantity'] += 1
             cart_total = session['cart_total'] + float(session['cart_item'][product_id]['price'])
-            session['cart_total'] = session['cart_total'] + float(session['cart_item'][product_id]['price'])
+            session['cart_total'] = float(session['cart_total']) + float(session['cart_item'][product_id]['price'])
 
         else:
             print("merging")
