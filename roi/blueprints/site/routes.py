@@ -263,7 +263,7 @@ def contact():
     return render_template('contact.html')
 
 
-##############################    STORE STUFF   #############################
+##############################    STORE FUNCTIONS   #############################
 
 @site.route('/store')
 @login_required
@@ -368,7 +368,9 @@ def add_to_cart(prod_id):
         if product_id in session['cart_item'].keys():
             print("item exists in cart")
             quantity = session['cart_item'][product_id]['quantity'] + 1
+            print(f"CART TOTAL: {session['cart_total']}")
             cart_total = session['cart_total'] + session['cart_item'][product_id]['price']
+            
 
         else:
             print("merging")
