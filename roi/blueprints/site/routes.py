@@ -473,3 +473,8 @@ def update_session():
         session.modified=True
     flash("Cart Updated!",category='success')
     return jsonify(success=True)
+
+@site.route('store/checkout', methods=['POST','GET'])
+@login_required
+def checkout():
+    pass

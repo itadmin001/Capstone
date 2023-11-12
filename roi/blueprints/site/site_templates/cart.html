@@ -101,7 +101,7 @@
         });
 
 
-        $('#updateButton').click(function () {
+        $('.quantity').on('change',function () {
             var quantity = $('.quantity').val()
             var prod_id = $('#product-id')[0]['value']
             var item_total = $('.item-total')[0].innerHTML.replace('$','')
