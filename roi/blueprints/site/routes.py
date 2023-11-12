@@ -463,7 +463,7 @@ def update_session():
            keys.append(item[k].keys())
     for key in keys:
         product_id = list(key)[0]
-        session['cart_item'][f"{product_id}"]['quantity'] = data[f"{product_id}"]['quantity']
+        session['cart_item'][f"{product_id}"]['quantity'] = data[f"'{product_id}'"]['quantity']
         session['cart_item']["'"+product_id+"'"]['item_total'] = data["'"+product_id+"'"]['item_total']
     
         ct = data['cart_total']
