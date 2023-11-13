@@ -3,7 +3,6 @@ from flask_login import LoginManager
 from flask_migrate import Migrate 
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from flask_bcrypt import Bcrypt
 
 #internal imports
 from config import Config
@@ -19,7 +18,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 app.json_encoder = JSONENcoder  # type: ignore
 jwt = JWTManager(app)
-bcrypt = Bcrypt(app)
 
 login_manager = LoginManager(app)
 login_manager.init_app(app)

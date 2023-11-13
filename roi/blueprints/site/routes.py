@@ -355,7 +355,7 @@ def delete(id):
 @site.route('/store/add-to-cart/<prod_id>', methods=['POST', 'GET'])
 @login_required
 def add_to_cart(prod_id):
-    # try:
+
     product_id = prod_id
     product = Product.query.filter_by(prod_id=product_id).first()
 
@@ -364,24 +364,19 @@ def add_to_cart(prod_id):
 
     session.modified = True
     if 'cart_item' in session:
-        print('cart not empty')
         if product_id in session['cart_item'].keys():
-            print("item exists in cart")
             quantity = session['cart_item'][product_id]['quantity'] + 1
             session['cart_item'][product_id]['quantity'] += 1
+            item_total = round(float(session['cart_item'][product_id]['item_total']),2)
+            item_total += round(float(session['cart_item'][product_id]['price']),2)
             cart_total = float(session['cart_total']) + float(session['cart_item'][product_id]['price'])
-            session['cart_total'] = float(session['cart_total']) + float(session['cart_item'][product_id]['price'])
+            session['cart_total'] = cart_total
 
         else:
             print("merging")
             itemArray = { product.prod_id : {'name' : product.name, 'prod_id' : product.prod_id, 'quantity' : 1, 'price' : product.price, 'image' : product.image, 'item_total': product.price}}
             session['cart_item'] = array_merge(session['cart_item'], itemArray)
-        
-        for key, value in session['cart_item'].items():
-            individual_quantity = int(session['cart_item'][key]['quantity'])
-            individual_price = float(session['cart_item'][key]['price'])
-            cart_total_item_count = cart_total_item_count + individual_quantity
-            cart_total = float(cart_total) + individual_price
+
     else:
         quantity = 1
         itemArray = { product.prod_id : {'name' : product.name, 'prod_id' : product.prod_id, 'quantity' : quantity, 'price' : product.price, 'image' : product.image, 'item_total': quantity * product.price}}
@@ -392,13 +387,6 @@ def add_to_cart(prod_id):
     session['cart_total_item_count'] = cart_total_item_count
     session['cart_total'] = cart_total
     return redirect('/store')
-
-    # except Exception as e:
-    #     print("Exception")
-    #     print(e)
-    # finally:
-    #     print('fell thru to finally')
-        # return redirect('/store')
 
 
 @site.route('/store/cart', methods=['POST','GET'])
@@ -450,31 +438,47 @@ def item_detail(prod_id):
 
     return render_template('shop_item_detail.html',product=product)
 
-@site.route('/update_session', methods=['POST','GET'])
+@site.route('/update_session/<prod_id>', methods=['POST','GET'])
 @login_required
-def update_session():
+def update_session(prod_id):
     keys=[]
-    extractedKeys =[]
     data = request.json
-    i = 0
-    for key, item in data.items():
-       for k in range(len(item)):
-           print(item[k])
-           keys.append(item[k].keys())
-    for key in keys:
-        product_id = list(key)[0]
-        session['cart_item'][f"{product_id}"]['quantity'] = data[f'{product_id}']['quantity']
-        session['cart_item']["'"+product_id+"'"]['item_total'] = data["'"+product_id+"'"]['item_total']
+    session.modified = True
+    print(data)
+ 
+    arr = data['ajxData']
+
+    for i in arr:
+        if prod_id in i:
+            indx = arr.index(i)
     
-        ct = data['cart_total']
-        cart_total = "%.2f" % float(ct)
-        print(f"CART TTL: {cart_total}")
-        session['cart_total'] = cart_total
-        session.modified=True
+    session['cart_item'][prod_id]['quantity'] = data['ajxData'][indx][prod_id]['quantity']
+    session['cart_item'][prod_id]['item_total'] = data['ajxData'][indx][prod_id]['item_total']
+
+    ct = data['ajxData'][-1]['cart_total']
+    cart_total = "%.2f" % float(ct)
+    print(f"CART TTL: {cart_total}")
+    session['cart_total'] = cart_total
+    session.modified=True
     flash("Cart Updated!",category='success')
     return jsonify(success=True)
 
 @site.route('/store/checkout', methods=['POST','GET'])
 @login_required
 def checkout():
+    #create an order (session variables)
+    
+
+    #decrement product inventory
+
+
+    #push to DB
+
+
+    #clear session
+
+
+    #have order history show up on account page
+    
+
     pass
